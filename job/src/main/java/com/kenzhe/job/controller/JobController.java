@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,58 +40,36 @@ public class JobController {
     )
     @PostMapping("/create")
     public ResponseEntity<Job> createJob(@RequestBody Job job){
-        return ResponseEntity.ok().body(jobService.createJob(job));
+        return new ResponseEntity<>(jobService.createJob(job), HttpStatus.CREATED);
     }
 
     @Operation(
             description = "Searching for all jobs",
             summary = "This is a summary for GET all jobs endpoint"
     )
-    @GetMapping("/all")
-    public ResponseEntity<List<Job>> getAllJobs(){
-        List<Job> jobs = jobService.getAllJobs();
-        if(jobs.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok().body( jobService.getAllJobs());
+    @GetMapping("/{companyId}/jobs")
+    public ResponseEntity<List<Job>> getAllJobsByCompanyId(@PathVariable Long companyId){
+        return new ResponseEntity<>(jobService.getAllJobs(companyId), HttpStatus.FOUND);
     }
-
-    @Operation(
-            description = "Searching for a job by its ID",
-            summary = "This is a summary for GET job endpoint"
-    )
-    @GetMapping("/{id}")
-    public ResponseEntity<Job> getJobById(@Parameter(description = "ID of the user to retrieve", required = true)
-                                          @PathVariable Long id){
-
-        Job job = jobService.getJobById(id);
-        if(job == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().body(jobService.getJobById(id));
-    }
-
 
     @Operation(
             description = "Searching for a Job by Company ID",
             summary = "This is a summary for another GET job endpoint"
     )
-    @GetMapping("{id}/company/{companyId}")
-    public ResponseEntity<Job> getJobByCompanyId(@Parameter(description = "ID of the user to retrieve", required = true)
-                                                 @PathVariable Long id,
-                                                 @PathVariable Long companyId){
-
-       // get company by job id
-        return ResponseEntity.ok().body(null);
+    @GetMapping("/{companyId}/jobs/{jobId}")
+    public ResponseEntity<Job> getJobById(@Parameter(description = "ID of the user to retrieve", required = true)
+                                          @PathVariable Long jobId,
+                                          @PathVariable Long companyId){
+        return new ResponseEntity<>(jobService.getJobById(companyId, jobId), HttpStatus.FOUND);
     }
 
     @Operation(
             description = "Updating a job by ID",
             summary = "This is a summary for PUT job endpoint"
     )
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job job){
-        return ResponseEntity.ok().body(jobService.updateJob(id, job));
+    @PutMapping("/{jobId}/company/{companyId}")
+    public ResponseEntity<Job> updateJob(@PathVariable Long jobId, @PathVariable Long companyId, @RequestBody Job job){
+        return new ResponseEntity<>(jobService.updateJob(companyId, jobId, job), HttpStatus.OK);
     }
 
     @Operation(
@@ -99,7 +78,7 @@ public class JobController {
     )
     @DeleteMapping("/{jobId}/company/{companyId}")
     public ResponseEntity<Boolean> deleteJob(@PathVariable Long jobId, @PathVariable Long companyId){
-        return ResponseEntity.ok().body(jobService.deleteJobById(companyId, jobId));
+        return new ResponseEntity<>(jobService.deleteJobById(companyId, jobId), HttpStatus.OK);
     }
 
 }

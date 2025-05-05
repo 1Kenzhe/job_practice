@@ -1,7 +1,10 @@
 package com.kenzhe.job.service;
 
+import com.kenzhe.job.exception.review.CompanyNotFoundException;
 import com.kenzhe.job.model.Company;
 import com.kenzhe.job.repository.CompanyRepository;
+import com.kenzhe.job.repository.JobRepository;
+import com.kenzhe.job.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +15,16 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final ReviewRepository reviewRepository;
+    private final JobRepository jobRepository;
+
 
     public Company createCompany(Company company){
         return companyRepository.save(company);
     }
 
     public Company getCompanyById(Long id){
-        return companyRepository.findById(id).orElse(null);
+        return companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
     }
 
     public List<Company> getAllCompanies(){
@@ -27,12 +33,14 @@ public class CompanyServiceImpl implements CompanyService {
 
     public Company updateCompanyById(Long id, Company company){
         Company res = getCompanyById(id);
+        res.setName(company.getName());
+        res.setDescription(company.getDescription());
+
         if(res != null) {
-            res.setName(company.getName());
-            res.setDescription(company.getDescription());
+            res.setReviews(company.getReviews());
             res.setJobs(company.getJobs());
-            companyRepository.save(res);
         }
+        companyRepository.save(res);
         return res;
     }
 

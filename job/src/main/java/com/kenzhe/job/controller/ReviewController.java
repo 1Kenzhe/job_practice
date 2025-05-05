@@ -13,20 +13,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/companies")
+@RequestMapping("/api/reviews")
 @Tag(name = "Review", description = "Review API")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/{companyId}/reviews")
+    @PostMapping("/create")
     public ResponseEntity<Review> createReview(Review review){
         return ResponseEntity.ok().body(reviewService.createReview(review));
     }
 
     @GetMapping("/{companyId}/reviews")
     public ResponseEntity<List<Review>> getAllReviewsByCompanyId(@PathVariable Long companyId){
-
         return ResponseEntity.ok().body(reviewService.getAllReviews(companyId));
     }
 
@@ -41,8 +40,8 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}/company/{companyId}")
-    public ResponseEntity<Review> deleteReviewById(@PathVariable Long reviewId, @PathVariable Long companyId){
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<Boolean> deleteReviewById(@PathVariable Long reviewId, @PathVariable Long companyId){
+        return new ResponseEntity<>(reviewService.deleteReviewById(companyId, reviewId), HttpStatus.OK);
     }
 
 }

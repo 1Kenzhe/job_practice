@@ -31,7 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream()
                 .filter(review -> review.getId().equals(reviewId))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new ReviewNotFoundException(companyId, reviewId));
 
         //  Alternative implementation using a for loop
         //        for(Review review : reviews){
@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     public Review updateReview(Long companyId, Long reviewId, Review updateReview){
         Review existingReview = reviewRepository.findByCompanyIdAndId(companyId, reviewId)
-                                                    .orElseThrow(() ->  new RuntimeException("Review not found"));
+                                                    .orElseThrow(() ->  new ReviewNotFoundException(companyId, reviewId));
 
         existingReview.setTitle(updateReview.getTitle());
         existingReview.setDescription(updateReview.getDescription());
@@ -56,8 +56,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         if(targetCompanyId != null && !targetCompanyId.equals(existingReview.getCompany().getId())){
-            Company newCompany = companyRepository.findById(targetCompanyId)
-                                                    .orElseThrow(() -> new IllegalArgumentException("Target company with ID " + targetCompanyId + " not found."));
+
+            final Long idToSearch = targetCompanyId;
+            Company newCompany = companyRepository.findById(idToSearch)
+                                                    .orElseThrow(() -> new IllegalArgumentException("Target company with ID " + idToSearch + " not found."));
 
             existingReview.setCompany(newCompany);
         }
@@ -66,10 +68,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     }
 
-    public boolean deleteReview(Long companyId, Long reviewId){
+    public boolean deleteReviewById(Long companyId, Long reviewId){
         try{
             Review existingReview = reviewRepository.findByCompanyIdAndId(companyId, reviewId)
-                    .orElseThrow(() ->  new ReviewNotFoundException("Review not found"));
+                    .orElseThrow(() ->  new ReviewNotFoundException(companyId, reviewId));
             reviewRepository.deleteById(reviewId);
             return true;
         } catch(Exception e){
