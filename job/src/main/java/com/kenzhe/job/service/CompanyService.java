@@ -1,6 +1,8 @@
 package com.kenzhe.job.service;
 
 import com.kenzhe.job.model.Company;
+import com.kenzhe.job.model.dto.CompanyRequestDTO;
+import com.kenzhe.job.model.dto.CompanyResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +14,10 @@ public interface CompanyService {
 
     List<Company> getAllCompanies();
 
-    Company createCompany(Company company);
+    Company createCompany(CompanyRequestDTO companyRequestDTO);
 
-    Company updateCompanyById(Long id, Company company);
+    Company updateCompanyById(Long id, CompanyRequestDTO companyRequestDTO);
 
-    boolean deleteCompanyById(Long id);
+    void deleteCompanyById(Long id);
 
 }

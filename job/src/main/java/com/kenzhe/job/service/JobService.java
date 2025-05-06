@@ -2,6 +2,7 @@ package com.kenzhe.job.service;
 
 import com.kenzhe.job.model.Job;
 import com.kenzhe.job.model.Review;
+import com.kenzhe.job.model.dto.JobRequestDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,11 @@ public interface JobService {
 
     Job getJobById(Long companyId, Long jobId);
 
-    Job createJob(Job job);
+    Job createJob(JobRequestDTO jobRequestDTO);
 
-    Job updateJob(Long companyId, Long jobId, Job job);
+    Job updateJob(Long companyId, Long jobId, JobRequestDTO jobRequestDTO);
 
 
-    boolean deleteJobById(Long companyId, Long jobId);
+    void deleteJobById(Long companyId, Long jobId);
 
 }
