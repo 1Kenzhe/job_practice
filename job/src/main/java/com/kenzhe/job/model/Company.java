@@ -23,8 +23,7 @@ public class Company {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Lob
-    @Column(length = 5000)
+    @Column(length = 5000, columnDefinition = "TEXT")
     private String description;
 
     @JsonIgnore

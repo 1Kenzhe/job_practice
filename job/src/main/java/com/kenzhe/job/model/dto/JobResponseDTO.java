@@ -13,8 +13,8 @@ public class JobResponseDTO {
     private Long id;
     private String title;
     private String description;
-    private String minSalary;
-    private String maxSalary;
+    private Integer minSalary;
+    private Integer maxSalary;
     private String location;
 
     // Include Company information (ID and Name are common choices)

@@ -26,15 +26,15 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
 
-    @PostMapping
+    @PostMapping("/reviews")
     public ResponseEntity<ReviewResponseDTO> createReview(@Valid ReviewRequestDTO reviewRequestDTO){
         Review createdReview = reviewService.createReview(reviewRequestDTO);
         ReviewResponseDTO dto = reviewMapper.toDto(createdReview);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/api/companies/{companyId}/reviews/{reviewId}")
-                .buildAndExpand(createdReview.getId())
+                .path("{companyId}/reviews/{reviewId}")
+                .buildAndExpand(reviewRequestDTO.getCompanyId(), createdReview.getId())
                 .toUri();
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }

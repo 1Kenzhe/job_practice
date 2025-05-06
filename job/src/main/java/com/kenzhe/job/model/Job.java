@@ -22,15 +22,14 @@ public class Job {
     @Column(nullable = false, length = 255)
     private String title;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(length = 100)
-    private String minSalary;
+    private Integer minSalary;
 
     @Column(length = 100)
-    private String maxSalary;
+    private Integer maxSalary;
 
     @Column(nullable = false, length = 255)
     private String location;

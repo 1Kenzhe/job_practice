@@ -4,6 +4,7 @@ import com.kenzhe.job.mapper.CompanyMapper;
 import com.kenzhe.job.model.Company;
 import com.kenzhe.job.model.dto.CompanyRequestDTO;
 import com.kenzhe.job.model.dto.CompanyResponseDTO;
+import com.kenzhe.job.repository.CompanyRepository;
 import com.kenzhe.job.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +27,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
 
 
 
@@ -35,7 +37,7 @@ public class CompanyController {
     public ResponseEntity<CompanyResponseDTO> createCompany(@Valid @RequestBody CompanyRequestDTO companyRequestDTO){
 
         Company createdCompany = companyService.createCompany(companyRequestDTO);
-        CompanyResponseDTO companyResponseDTO = companyMapper.toDto(createdCompany);
+        CompanyResponseDTO companyResponseDTO = companyMapper.toDto(createdCompany, companyRepository);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -52,7 +54,7 @@ public class CompanyController {
     public ResponseEntity<List<CompanyResponseDTO>> getAllCompanies(){
         List<Company> companies = companyService.getAllCompanies();
         List<CompanyResponseDTO> companyResponseDTOs = companies.stream()
-                        .map(companyMapper::toDto)
+                        .map(company -> companyMapper.toDto(company, companyRepository))
                         .toList();
         return new ResponseEntity<>(companyResponseDTOs, HttpStatus.OK);
     }
@@ -62,7 +64,7 @@ public class CompanyController {
     @ApiResponse(responseCode = "200", description = "Company found")
     public ResponseEntity<CompanyResponseDTO> getCompanyById(@PathVariable Long id){
         Company company = companyService.getCompanyById(id);
-        CompanyResponseDTO dto = companyMapper.toDto(company);
+        CompanyResponseDTO dto = companyMapper.toDto(company, companyRepository);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -71,7 +73,7 @@ public class CompanyController {
     @ApiResponse(responseCode = "200", description = "Company updated successfully")
     public ResponseEntity<CompanyResponseDTO> updateCompanyById(@PathVariable Long id, @Valid @RequestBody CompanyRequestDTO companyRequestDTO){
         Company company= companyService.updateCompanyById(id, companyRequestDTO);
-        CompanyResponseDTO dto = companyMapper.toDto(company);
+        CompanyResponseDTO dto = companyMapper.toDto(company, companyRepository);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

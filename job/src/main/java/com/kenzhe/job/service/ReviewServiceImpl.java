@@ -1,5 +1,6 @@
 package com.kenzhe.job.service;
 
+import com.kenzhe.job.exception.review.CompanyNotFoundException;
 import com.kenzhe.job.exception.review.ReviewNotFoundException;
 import com.kenzhe.job.mapper.ReviewMapper;
 import com.kenzhe.job.model.Company;
@@ -27,7 +28,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Review createReview(ReviewRequestDTO reviewRequestDTO) {
         log.info("Creating a new company");
-        return reviewRepository.save(reviewMapper.toEntity(reviewRequestDTO));
+
+        Company company = companyRepository.findById(reviewRequestDTO.getCompanyId())
+                .orElseThrow(() -> new CompanyNotFoundException(reviewRequestDTO.getCompanyId()));
+        Review review = reviewMapper.toEntity(reviewRequestDTO);
+        review.setCompany(company);
+        reviewRepository.save(review);
+        return review;
     }
 
     @Transactional

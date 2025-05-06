@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-@RequestMapping("/api/companies/")
+@RequestMapping("/api/companies")
 @RestController
 @Tag(name = "Job", description = "Job API")
 public class JobController {
@@ -44,16 +44,17 @@ public class JobController {
             }
 
     )
-    @PostMapping
+    @PostMapping("/jobs")
     public ResponseEntity<JobResponseDTO> createJob(@Valid @RequestBody JobRequestDTO jobRequestDTO){
         Job createdJob = jobService.createJob(jobRequestDTO);
         JobResponseDTO jobResponseDTO = jobMapper.toDto(createdJob);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/api/companies/{companyId}/jobs/{jobId}")
-                .buildAndExpand(createdJob.getId())
+                .path("/{companyId}/jobs/{jobId}")
+                .buildAndExpand(jobRequestDTO.getCompanyId(), createdJob.getId())
                 .toUri();
+
         return new ResponseEntity<>(jobResponseDTO, HttpStatus.CREATED);
     }
 

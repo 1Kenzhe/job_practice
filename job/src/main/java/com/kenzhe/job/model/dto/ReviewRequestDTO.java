@@ -21,8 +21,8 @@ public class ReviewRequestDTO {
     @NotBlank(message = "Job description cannot be blank")
     private String description;
 
-    @NotBlank(message = "Rating cannot be blank")
-    private double rating;
+    @NotNull(message = "Rating cannot be null")
+    private Double rating;
 
     @NotNull(message = "Company ID must be provided") // Essential for linking
     private Long companyId;

@@ -1,6 +1,7 @@
 package com.kenzhe.job.model.dto;
 
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,11 +22,13 @@ public class JobRequestDTO {
     private String description;
 
     // Consider validation if these should be numeric or follow a pattern
-    @Size(max = 100)
-    private String minSalary;
+    @NotNull
+    @Min(0)
+    private Integer minSalary;
 
-    @Size(max = 100)
-    private String maxSalary;
+    @NotNull
+    @Min(0)
+    private Integer maxSalary;
 
     @NotBlank(message = "Location cannot be blank")
     @Size(max = 255)

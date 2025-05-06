@@ -1,5 +1,6 @@
 package com.kenzhe.job.service;
 
+import com.kenzhe.job.exception.review.CompanyNotFoundException;
 import com.kenzhe.job.exception.review.JobNotFoundException;
 import com.kenzhe.job.exception.review.ReviewNotFoundException;
 import com.kenzhe.job.mapper.JobMapper;
@@ -41,7 +42,14 @@ public class JobServiceImpl implements JobService {
 
     public Job createJob(JobRequestDTO jobRequestDTO) {
         log.info("Creating a new company");
-        return jobRepository.save(jobMapper.toEntity(jobRequestDTO));
+
+        Company company = companyRepository.findById(jobRequestDTO.getCompanyId())
+                .orElseThrow(() -> new CompanyNotFoundException(jobRequestDTO.getCompanyId()));
+
+        Job job = jobMapper.toEntity(jobRequestDTO);
+        job.setCompany(company);
+        job = jobRepository.save(job);
+        return job;
     }
 
     public Job updateJob(Long companyId, Long jobId, JobRequestDTO jobRequestDTO) {
